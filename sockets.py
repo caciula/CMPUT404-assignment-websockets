@@ -76,7 +76,6 @@ myWorld = World()
 def set_listener( entity, data ):
     ''' do something with the update ! '''
     # XXX: TODO IMPLEMENT ME
-    print "Called set_listener!" + entity
     return None
 
 myWorld.add_set_listener( set_listener )
@@ -100,13 +99,16 @@ def read_ws(ws,client):
             message = ws.receive()
             print "WS RECV: \"%s\"" % message
 
-            if ((message is not None) and (message != "")):
-                packet = json.loads(message)
+            if (message is not None):
+                if (message == ""):
+                    send_all_json(myWorld.world())
+                else:
+                    packet = json.loads(message)
 
-                for key in packet:
-                    myWorld.set(key, packet[key])
+                    for key in packet:
+                        myWorld.set(key, packet[key])
 
-            send_all_json(myWorld.world())
+                    send_all_json(packet)
     except:
         '''Done'''
                 

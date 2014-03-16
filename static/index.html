@@ -263,7 +263,11 @@ function wsSetup() {
     };
     socket.onmessage = function(msg) {  
         try {
-            world = JSON.parse(msg.data);  
+            var message = JSON.parse(msg.data);
+            for (var keys in message) {
+                world[keys] = message[keys];
+            }
+
             drawNextFrame();   
         } catch (e) {
             alert("socket on message: " + e);
