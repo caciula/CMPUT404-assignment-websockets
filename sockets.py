@@ -75,8 +75,7 @@ myWorld = World()
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
-    # XXX: TODO IMPLEMENT ME
-    return None
+    send_all_json({entity: data})
 
 myWorld.add_set_listener( set_listener )
         
@@ -100,15 +99,10 @@ def read_ws(ws,client):
             print "WS RECV: \"%s\"" % message
 
             if (message is not None):
-                if (message == ""):
-                    send_all_json(myWorld.world())
-                else:
-                    packet = json.loads(message)
+                packet = json.loads(message)
 
-                    for key in packet:
-                        myWorld.set(key, packet[key])
-
-                    send_all_json(packet)
+                for key in packet:
+                    myWorld.set(key, packet[key])
     except:
         '''Done'''
                 
@@ -146,23 +140,23 @@ def update(entity):
     '''update the entities via this interface'''
     data = flask_post_json()
     myWorld.set(entity, data)
-    send_all_json(myWorld.get(entity))
+    return json.dumps(myWorld.get(entity))
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    send_all_json(myWorld.world())
+    return json.dumps(myWorld.world())
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    send_all_json(myWorld.get(entity))
+    return json.dumps(myWorld.get(entity))
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
     myWorld.clear()
-    send_all_json(myWorld.world())
+    return json.dumps(myWorld.world())
 
 if __name__ == "__main__":
     ''' This doesn't work well anymore:

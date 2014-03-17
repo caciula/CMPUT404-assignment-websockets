@@ -256,7 +256,14 @@ function wsSetup() {
     var url = "ws://"+host+"/subscribe";   
     socket = new WebSocket(url);
     socket.onopen = function() {
-        socket.send("");
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://"+host+"/world", false);
+        xhr.send(null);
+
+        serverWorld = JSON.parse(xhr.responseText);
+        for (var keys in serverWorld) {
+            world[keys] = serverWorld[keys];
+        }
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
